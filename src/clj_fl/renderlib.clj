@@ -1,10 +1,8 @@
-
 (ns clj-fl.renderlib
   (:require [clj-fl.core :refer :all])
   (import [java.awt Color]
           [javax.imageio ImageIO]
-          [javax.swing JPanel JFrame])
-  (:gen-class))
+          [javax.swing JPanel JFrame]))
 
 (defn angle [p1 p2]
   (Math/atan (/ (- (p2 :y) (p1 :y))
@@ -24,10 +22,11 @@
 
 (def gfx (atom nil))
 
-(def t (atom nil))
+(def t (atom nil)) ;real world to screen window coordinate map
 
 (defn startgraphics
-  "start a graphics window of wx by xy pixels (400 by 400 if none is specified. The real world that is mapped in the graphic window is approx 12 meterd by 12 meters."
+  "start a graphics window of wx by xy pixels (400 by 400 if none is specified.
+  The real world that is mapped in the graphic window is approx 12 meterd by 12 meters."
   ([] (startgraphics 400 400))
   ([wx wy]
    (reset! frame
@@ -44,9 +43,12 @@
 
 
 (defn transform [p]
+  "Viewing Transformation - perform the mapping of real world coordinates of the point p
+  to the screen window coordinates. here the real world is a rectangle on a plane of 12 by 12 meters"
   (list (+ (@t :dx) (* (first p) (@t :tx))) (+ (@t :dy) (* (second p) (@t :ty)))))
 
 (defn transformsegment [s]
+  "Viewing Transformation - perform the viewing transformation of the two end points of the segment s."
   (list (transform (first s)) (transform (second s))))
 
 (defn setlinecolor [c]
@@ -56,19 +58,23 @@
   (.setStroke @gfx (java.awt.BasicStroke. w)))
 
 (defn drawline [s]
+  "Draw the line segment s"
   (let [st (transformsegment s)]
   (.drawLine @gfx (first(first st)) (second(first st)) (first(second st)) (second(second st)))))
 
-(defn drawcolorline [c w l]
+(defn drawcolorline [c w s]
+  "Draw the line segment s of color c and width w"
   (setlinecolor c)
   (setlinewidth w)
-  (drawline l))
+  (drawline s))
 
 (defn drawstring [s p]
+  "draw the string s starting from point p"
   (let [pt (transform p)]
   (.drawString @gfx s (first pt) (second pt))))
 
 (defn drawcolorstring [c s p]
+  "draw the string s starting from point p using the color c"
   (setlinecolor c)
   (drawstring s p))
 

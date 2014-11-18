@@ -1,4 +1,4 @@
-(defproject clj-fl "0.0.0-prealfa"
+(defproject clj-fl "0.1.0-prealfa4"
   :description "Frame Language in Clojure"
   :dependencies [[org.clojure/clojure "1.6.0"]]
   :license {:name "Eclipse Public License"

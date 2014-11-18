@@ -193,6 +193,10 @@
   (let [isas (getisa f)]
     (if (nil? isas) false (is-ako? ako isas))))
 
+;;;
+;; demons
+;
+
 (defn showcofs[f]
   (let [cofs (getcof f) cofslist (if-not (list? cofs) (list cofs) cofs)]
     (if (nil? cofs)
