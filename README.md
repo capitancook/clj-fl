@@ -65,7 +65,7 @@ Assuming you have [Leiningen](http://leiningen.org/) installed, start a REPL in 
 lein repl
 ```
 
-Then, at the repl promptthen, at the repl prompt, type
+Then, at the repl prompt, type
 
 ```clojure
 (showorgalfa)
