@@ -65,8 +65,9 @@
 (defn fget-frame
   "If it exist return the frame f, otherwise create the frame f and returns it"
   [f]
-  (let [fv (get @frames f)]
-    (if fv fv (create-frame f))))
+  (if-let [fv (get @frames f)]
+    fv
+    (create-frame f)))
 
 (defn fput-frame
   "Store the frame f in the frames repository"

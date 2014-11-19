@@ -8,7 +8,7 @@ Start a REPL with
 
 lein repl
 
-and, at the repl prompt, type
+then, at the repl prompt, type
 
 (showorgalfa)
 
