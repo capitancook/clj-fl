@@ -11,20 +11,22 @@
  {:frame       {:value "bu"}
   :name        {:value "Building Unit"}
   :description {:value "A man-made structure with a roof and walls standing more or less permanently in one place. Can be composed of other building unit"}
+  :remove      {:value removestructure}
   :render2d    {:proc  render2dbu}
-  :showcofs    {:proc showcofs}}
+  :showcofs    {:proc  showcofs}}
 
  {:frame       {:value "su"}
   :name        {:value "Space Unit"}
   :description {:value "A space unit is  a building unit component. Is composed of building elements"}
-  :showcofs    {:proc showcofs}}
+  :remove      {:value removestructure}
+  :showcofs    {:proc  showcofs}}
 
 
  {:frame       {:value "be"}
   :name        {:value "Building Element"}
   :description {:value "BEs are the physical elements that define the BU and BE. For example, a wall is a BE, a pillar is a BE and so on"}
-  :render2d    {:proc render2dbe}
-  :showcofs    {:proc showcofs}}
+  :render2d    {:proc  render2dbe}
+  :showcofs    {:proc  showcofs}}
 
  ;------ ISA frames
 

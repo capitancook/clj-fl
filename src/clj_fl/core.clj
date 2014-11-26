@@ -47,7 +47,6 @@
       m)
     (dissoc m k)))
 
-
 (defn in?
   "true if seq contains elm"
   [seq elm]
@@ -91,7 +90,7 @@
 (defn fget
   "Fetches information from a given frame, slot, and facet"
   [frame slot facet]
-  (get-in (fget-frame frame) [slot facet]))
+  (get-in @frames [frame slot facet]))
 
 (defn fput
   "Places information in a given frame, slot, and facet"
@@ -125,17 +124,18 @@
   [frame slot facet info]
   (if (fcheck frame slot facet info)
     (let [l (fget frame slot facet) sl (forceseq l)
-          slu (remove #{info} sl) c (count slu)
-          sslu (first slu)]
-      (println "l     = " l)
-      (println "sl    = " sl)
-      (println "slu   = " slu)
-      (println "sslu  = " sslu)
+          slu (remove #{info} sl) c (count slu)]
       (fremove frame slot facet)
       (if-not (or (empty? slu) (nil? (first slu)))
         (if (= c 1)
-          (fput frame slot facet sslu)
-          (fput frame slot facet slu))))))
+          (fput frame slot facet (first slu))
+          (fput frame slot facet slu)
+          )))))
+
+(defn removeframelinks
+  "Remove the relations links  between  the frames fs and the frame f"
+  [f fs links]
+  (dorun (map #(fdeleteinfo % links :value f) (forceseq fs))))
 
 (defn fget-v-d
   "Fetches :value information from a given frame and slot or, in case there is no :value facet, fetches :default facet"
@@ -232,24 +232,11 @@
 
 (defn showcofs
   [f]
-  "show the "
-  (let [cofs (getcof f) cofslist (if-not (list? cofs) (list cofs) cofs)]
+  "show the hiearchy :cof for a given frame f"
+  (let [cofs (getcof f) cofslist (forceseq cofs)]
     (if (nil? cofs)
       (vector f)
       (reduce #( conj %1 ((if-let [showproc (fget-ii %2 :showcofs :proc)] (eval showproc) (vector %2)) %2)) (vector f)  cofslist))))
 
 
-(defn removestruct
-  ""
-  [st]
-  (defn removeframelinks
-    "Remove the relations links  between  the frames fs and the frame f"
-    [f fs links]
-    (dorun (map #(fdeleteinfo % links :value f) (forceseq fs))))
-  (let [cofs (fget st :cof :value) isis (fget st :isi :value)]
-    (println "cofs = " cofs)
-    (println "isis = " isis)
-    (removeframelinks st cofs :isi)
-    (removeframelinks st isis :cof))
-  (fremove st))
 

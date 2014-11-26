@@ -3,7 +3,14 @@
              [clj-fl.renderlib :refer :all]
              [vijual :as v]))
 
-  (load-kb-vec "..\\example\\resources\\kb-kbcad.clj")
+
+(defn removestructure
+  "Remove a structure frame from the knowledge base"
+  [st]
+  (let [cofs (fget st :cof :value) isis (fget st :isi :value)]
+    (removeframelinks st cofs :isi)
+    (removeframelinks st isis :cof))
+  (fremove st))
 
 (defn showkbcad
   []
@@ -46,17 +53,3 @@
   (println "* OrgAlfa is composed by :                                                            *")
   (v/draw-tree (vector ((eval (fget-ii "OrgAlfa" :showcofs :proc)) "OrgAlfa")))
   )
-
-(defn removestruct
-  ""
-  [st]
-  (defn removeframelinks
-    "Remove the relations links  between  the frames fs and the frame f"
-    [f fs links]
-    (dorun (map #(fdeleteinfo % links :value f) (forceseq fs))))
-  (let [cofs (fget st :cof :value) isis (fget st :isi :value)]
-    (println "cofs = " cofs)
-    (println "isis = " isis)
-    (removeframelinks st cofs :isi)
-    (removeframelinks st isis :cof))
-  (fremove st))
