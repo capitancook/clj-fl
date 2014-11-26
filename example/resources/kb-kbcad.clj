@@ -2,6 +2,10 @@
 
  ;-------------------------------------------Knowledge Base start--------------------------------------------------
 
+ ; see: Knowledge-based System to Support Architectural Design Intelligent objects, project net-constraints, collaborative work
+ ; CARRARA, Gianfranco; FIORAVANTI, Antonio; NOVEMBRI, Gabriele
+ ; in Education and research in Computer Aided Architectural Design in Europe
+ ; 19 th ECAADE-conference Helsinki, Finland - August 2001
  ;------ AKO frames
 
  {:frame       {:value "bu"}
@@ -61,21 +65,21 @@
   :name        {:value "Kitchen 1"}
   :isa         {:value "room"}
   :cof         {:value ("w1" "w2" "w3" "w4")}
-  :isi         {:value "Flat1"}
+  :isi         {:value "flat1"}
   :sps         {:value (1 3)}}
 
  {:frame       {:value "bathroom1"}
   :name        {:value "Bathroom 1"}
   :isa         {:value "room"}
   :cof         {:value ("w3" "w10" "w9" "w8")}
-  :isi         {:value "Flat1"}
+  :isi         {:value "flat1"}
   :sps         {:value (7 3)}}
 
  {:frame       {:value "bedroom1"}
   :name        {:value "Bedroom 1"}
   :isa         {:value "room"}
   :cof         {:value ("w5" "w4" "w8" "w7" "w6")}
-  :isi         {:value "Flat1"}
+  :isi         {:value "flat1"}
   :sps         {:value (5 8)}}
 
  {:frame       {:value "w1"}

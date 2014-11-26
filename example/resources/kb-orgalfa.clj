@@ -18,8 +18,9 @@
   :showcofs {:proc showcofs}}
 
  {:frame {:value "structure"}
-  :description {:value "A social structure of human being"}
-  :showcofs {:proc showcofs}}
+  :description {:value "A social structure of human beings aimed at reaching some target"}
+  :showcofs {:proc showcofs}
+  :delete {:proc delstruct}
 
  {:frame {:value "level"}
   :description {:value "A natural, social or conceptual level. In this example is a hierarchical level for people working in the organization "}}

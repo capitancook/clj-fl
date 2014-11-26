@@ -3,8 +3,7 @@
 
 (def frames (atom {}))
 
-
-;;;
+;;
 ;; Service functions
 ;
 
@@ -48,6 +47,19 @@
       m)
     (dissoc m k)))
 
+
+(defn in?
+  "true if seq contains elm"
+  [seq elm]
+  (some #(= elm %) seq))
+
+(defn forceseq
+  "Force passed parameter  to be a seq"
+  [x]
+  (if-not (seq? x)
+    (list x)
+    x))
+
 ;;;
 ;; Frame Language function
 ;
@@ -73,7 +85,8 @@
   "Store the frame f in the frames repository"
   [f]
   (let [fn (get-in f [:frame :value]) ]
-    (swap! frames #(assoc % fn f))))
+    (swap! frames #(assoc % fn f)))
+  nil)
 
 (defn fget
   "Fetches information from a given frame, slot, and facet"
@@ -82,8 +95,9 @@
 
 (defn fput
   "Places information in a given frame, slot, and facet"
-  [frame slot facet v]
-  (swap! frames #(assoc-in % [frame slot facet] v)))
+  [frame slot facet value]
+  (swap! frames #(assoc-in % [frame slot facet] value))
+  nil)
 
 (defn fput-p
   "Places information in a given frame, slot, and facet and activate the demons :range and :if-added"
@@ -97,13 +111,31 @@
 (defn fremove
   "Remove information in a given frame, slot, and facet"
   [& more]
-  (println "more = " more)
-  (swap! frames #(dissoc-in % (vec more))))
+  (swap! frames #(dissoc-in % (vec more)))
+  nil)
 
 (defn fcheck
-  "Check if the information stored in a given frame, slot, and facet is equal to value"
+  "Check if the information stored in a given frame, slot, and facet is equal to or contains value"
   [frame slot facet value]
-  (= (fget frame slot facet) value))
+  (in? (forceseq (fget frame slot facet)) value))
+
+(defn fdeleteinfo
+  "Delete the value info from the frame.slot.facet . If, after the removal,
+  the facet is empty or contains nil the facet is removed too"
+  [frame slot facet info]
+  (if (fcheck frame slot facet info)
+    (let [l (fget frame slot facet) sl (forceseq l)
+          slu (remove #{info} sl) c (count slu)
+          sslu (first slu)]
+      (println "l     = " l)
+      (println "sl    = " sl)
+      (println "slu   = " slu)
+      (println "sslu  = " sslu)
+      (fremove frame slot facet)
+      (if-not (or (empty? slu) (nil? (first slu)))
+        (if (= c 1)
+          (fput frame slot facet sslu)
+          (fput frame slot facet slu))))))
 
 (defn fget-v-d
   "Fetches :value information from a given frame and slot or, in case there is no :value facet, fetches :default facet"
@@ -198,11 +230,26 @@
 ;; demons
 ;
 
-(defn showcofs[f]
+(defn showcofs
+  [f]
+  "show the "
   (let [cofs (getcof f) cofslist (if-not (list? cofs) (list cofs) cofs)]
     (if (nil? cofs)
       (vector f)
       (reduce #( conj %1 ((if-let [showproc (fget-ii %2 :showcofs :proc)] (eval showproc) (vector %2)) %2)) (vector f)  cofslist))))
 
 
+(defn removestruct
+  ""
+  [st]
+  (defn removeframelinks
+    "Remove the relations links  between  the frames fs and the frame f"
+    [f fs links]
+    (dorun (map #(fdeleteinfo % links :value f) (forceseq fs))))
+  (let [cofs (fget st :cof :value) isis (fget st :isi :value)]
+    (println "cofs = " cofs)
+    (println "isis = " isis)
+    (removeframelinks st cofs :isi)
+    (removeframelinks st isis :cof))
+  (fremove st))
 
