@@ -59,6 +59,10 @@
     (list x)
     x))
 
+(defn abs
+  [n]
+  (if (neg? n) (- n) n))
+
 ;;;
 ;; Frame Language function
 ;
@@ -95,7 +99,8 @@
 (defn fput
   "Places information in a given frame, slot, and facet"
   [frame slot facet value]
-  (swap! frames #(assoc-in % [frame slot facet] value))
+  (let [v (fget frame slot facet) vu (if-not (nil? v) (conj (forceseq v) value) value)]
+  (swap! frames #(assoc-in % [frame slot facet] vu)))
   nil)
 
 (defn fput-p
@@ -147,8 +152,9 @@
   "Fetches :value information from a given frame and slot and, in case there is no :value facet, fetches :default facet,
    otherwise activate the :if-neede demon"
   [frame slot]
-  (let [result (or (fget-v-d frame slot) (fget frame slot :if-needed))]
-    (if (test/function? result) (result frame slot) result)))
+  (let [result (or (fget-v-d frame slot) (fget-ii frame slot :if-needed))]
+;;     (println result)
+    (if (test/function? result) ((eval result) frame slot) result)))
 
 (defn fget-i
   [frame slot facet]
@@ -184,59 +190,51 @@
 ;
 
 (defn getv
-"get the :value of the slot s of a given frame symbol f"
-[f s]
+  "get the facet :value of the slot s of a given frame symbol f"
+  [f s]
   (fget f s :value))
 
 
 (defn getn
-"get the :value of :name of a given frame symbol f"
-[f]
+  "get the facet :value of the slot :name of a given frame f"
+  [f]
   (fget f :name :value))
 
 (defn getcof
-"get the :cof (component-of) frames of a given frame symbol f"
-[f]
+  "get the  facet :value of the slot :cof (component-of) of a given frame f"
+  [f]
   (fget f :cof :value))
 
+(defn getisi
+  "get the  facet :value of the slot :isi (is-in) of a given frame f"
+  [f]
+  (fget f :isi :value))
+
 (defn getako
-"get the :ako (a-kind-of) frames of a given frame symbol f"
-[f]
+  "get the  facet :value of the slot :ako (a-kind-of) of a given frame f"
+  [f]
   (fget f :ako :value))
 
 (defn getisa
-"get the :isa frames of a given frame symbol f"
-[f]
+  "get the  facet :value of the slot :isa  of a given frame f"
+  [f]
   (fget f :isa :value))
 
-(defn ako?
-  [ako f]
-  (= (getako f) ako))
+(defn getproc
+  "get the  facet :value of the slot :cof (component-of) of a given frame f"
+  [frame slot]
+  (eval (fget-ii frame slot :proc)))
 
-(defn is-ako?
-  [ako frames]
-  (loop [fs frames result false]
-    (cond
-     (nil? fs) result
-     (not (list? fs)) (ako? ako fs)
-     :else (recur (next fs) (or result (ako? ako (first fs)))))))
 
 (defn is-a?
+  "Return true if the if the frame f is a-kind-of ako. Multiple akos are possible"
   [ako f]
-  (let [isas (getisa f)]
-    (if (nil? isas) false (is-ako? ako isas))))
+  (let [akos (forceseq (fget-ii f :ako :value))]
+    (in? akos ako)))
 
 ;;;
 ;; demons
 ;
-
-(defn showcofs
-  [f]
-  "show the hiearchy :cof for a given frame f"
-  (let [cofs (getcof f) cofslist (forceseq cofs)]
-    (if (nil? cofs)
-      (vector f)
-      (reduce #( conj %1 ((if-let [showproc (fget-ii %2 :showcofs :proc)] (eval showproc) (vector %2)) %2)) (vector f)  cofslist))))
 
 
 
