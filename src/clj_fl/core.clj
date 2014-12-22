@@ -67,7 +67,7 @@
 ;; Frame Language function
 ;
 
-;-----Basic functions------- START
+;-----Basic abstraction barrier functions------- START
 
 (defn fget-frame
   "If it exist return the frame f, otherwise nil"
@@ -100,7 +100,7 @@
   (swap! frames #(dissoc-in % (vec more)))
   nil)
 
-;-----Basic functions------- END
+;-----Basic abstraction barrier functions------- END
 
 (defn fget
   "Fetches information from a given frame, slot, and facet"
@@ -331,10 +331,6 @@
   [ako f]
   (let [akos (forceseq (fget-ii f :ako :value))]
     (in? akos ako)))
-
-;;;
-;; demons
-;
 
 
 
