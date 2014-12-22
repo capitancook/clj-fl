@@ -87,6 +87,10 @@ After each of the previous command/function you can play around with the KB you 
 
 ### Please note that clj-fl is pre-alpha software.
 
+Current version of clj-fl is:
+
+[![Clojars Project](http://clojars.org/clj-fl/latest-version.svg)](http://clojars.org/clj-fl)
+
 Even if this library is still not ready for production to use it, assuming you have [Leiningen](http://leiningen.org/) installed, your project.clj should include something like the following:
 
 ```clojure
