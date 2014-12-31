@@ -1,5 +1,6 @@
 (ns clj-fl.core
-  (:require [clojure.test :as test]))
+  (:require [clojure.test :as test]
+            [clojure.set :as set]))
 
 (def frames (atom {}))
 
@@ -180,7 +181,7 @@
   [fa fb slot]
   (let [va (set (fget fa slot :value))
         vb (set (fget fb slot :value))
-        vm (seq (clojure.set/union va vb))]
+        vm (seq (set/union va vb))]
     (fput! fa slot :value vm)
     (fput! fb slot :value vm)))
 
